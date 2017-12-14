@@ -1,0 +1,431 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="USFAccomModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Availability">
+          <Key>
+            <PropertyRef Name="Student_ID" />
+            <PropertyRef Name="Community_ID" />
+            <PropertyRef Name="AptNo" />
+          </Key>
+          <Property Name="Student_ID" Type="varchar" MaxLength="9" Nullable="false" />
+          <Property Name="Community_ID" Type="int" Nullable="false" />
+          <Property Name="AptNo" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="AvailableSlots" Type="int" Nullable="false" />
+          <Property Name="Preference" Type="varchar(max)" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Community">
+          <Key>
+            <PropertyRef Name="Community_ID" />
+          </Key>
+          <Property Name="Community_ID" Type="int" Nullable="false" />
+          <Property Name="Community_Name" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Community_Address" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="BullRunner" Type="bit" />
+          <Property Name="Facility" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Requests">
+          <Key>
+            <PropertyRef Name="RequestorID" />
+            <PropertyRef Name="RequesteeID" />
+            <PropertyRef Name="CommunityID" />
+            <PropertyRef Name="AptNo" />
+          </Key>
+          <Property Name="RequestorID" Type="varchar" MaxLength="9" Nullable="false" />
+          <Property Name="RequesteeID" Type="varchar" MaxLength="9" Nullable="false" />
+          <Property Name="CommunityID" Type="int" Nullable="false" />
+          <Property Name="AptNo" Type="varchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="StudentDetails">
+          <Key>
+            <PropertyRef Name="Student_ID" />
+          </Key>
+          <Property Name="Student_ID" Type="varchar" MaxLength="9" Nullable="false" />
+          <Property Name="Student_FirstName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Student_LastName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Student_Email" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Student_Phone" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Term_Code" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TermTable">
+          <Key>
+            <PropertyRef Name="Term_Code" />
+          </Key>
+          <Property Name="Term_Code" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__StudentDe__Term___4AB81AF0">
+          <End Role="TermTable" Type="Self.TermTable" Multiplicity="1" />
+          <End Role="StudentDetails" Type="Self.StudentDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TermTable">
+              <PropertyRef Name="Term_Code" />
+            </Principal>
+            <Dependent Role="StudentDetails">
+              <PropertyRef Name="Term_Code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Community_CommunityID">
+          <End Role="Community" Type="Self.Community" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Availability" Type="Self.Availability" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Community">
+              <PropertyRef Name="Community_ID" />
+            </Principal>
+            <Dependent Role="Availability">
+              <PropertyRef Name="Community_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Community_CommunityID2">
+          <End Role="Community" Type="Self.Community" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Requests" Type="Self.Requests" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Community">
+              <PropertyRef Name="Community_ID" />
+            </Principal>
+            <Dependent Role="Requests">
+              <PropertyRef Name="CommunityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudentDetails_StudentID">
+          <End Role="StudentDetails" Type="Self.StudentDetails" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Availability" Type="Self.Availability" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StudentDetails">
+              <PropertyRef Name="Student_ID" />
+            </Principal>
+            <Dependent Role="Availability">
+              <PropertyRef Name="Student_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudentDetails_StudentID2">
+          <End Role="StudentDetails" Type="Self.StudentDetails" Multiplicity="1" />
+          <End Role="Requests" Type="Self.Requests" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StudentDetails">
+              <PropertyRef Name="Student_ID" />
+            </Principal>
+            <Dependent Role="Requests">
+              <PropertyRef Name="RequestorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudentDetails_StudentID3">
+          <End Role="StudentDetails" Type="Self.StudentDetails" Multiplicity="1" />
+          <End Role="Requests" Type="Self.Requests" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StudentDetails">
+              <PropertyRef Name="Student_ID" />
+            </Principal>
+            <Dependent Role="Requests">
+              <PropertyRef Name="RequesteeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="USFAccomModelStoreContainer">
+          <EntitySet Name="Availability" EntityType="Self.Availability" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Community" EntityType="Self.Community" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Requests" EntityType="Self.Requests" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StudentDetails" EntityType="Self.StudentDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TermTable" EntityType="Self.TermTable" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__StudentDe__Term___4AB81AF0" Association="Self.FK__StudentDe__Term___4AB81AF0">
+            <End Role="TermTable" EntitySet="TermTable" />
+            <End Role="StudentDetails" EntitySet="StudentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Community_CommunityID" Association="Self.FK_Community_CommunityID">
+            <End Role="Community" EntitySet="Community" />
+            <End Role="Availability" EntitySet="Availability" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Community_CommunityID2" Association="Self.FK_Community_CommunityID2">
+            <End Role="Community" EntitySet="Community" />
+            <End Role="Requests" EntitySet="Requests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentDetails_StudentID" Association="Self.FK_StudentDetails_StudentID">
+            <End Role="StudentDetails" EntitySet="StudentDetails" />
+            <End Role="Availability" EntitySet="Availability" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentDetails_StudentID2" Association="Self.FK_StudentDetails_StudentID2">
+            <End Role="StudentDetails" EntitySet="StudentDetails" />
+            <End Role="Requests" EntitySet="Requests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentDetails_StudentID3" Association="Self.FK_StudentDetails_StudentID3">
+            <End Role="StudentDetails" EntitySet="StudentDetails" />
+            <End Role="Requests" EntitySet="Requests" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="USFAccomModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Availability">
+          <Key>
+            <PropertyRef Name="Student_ID" />
+            <PropertyRef Name="Community_ID" />
+            <PropertyRef Name="AptNo" />
+          </Key>
+          <Property Name="Student_ID" Type="String" MaxLength="9" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Community_ID" Type="Int32" Nullable="false" />
+          <Property Name="AptNo" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="AvailableSlots" Type="Int32" Nullable="false" />
+          <Property Name="Preference" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Community" Relationship="Self.FK_Community_CommunityID" FromRole="Availability" ToRole="Community" />
+          <NavigationProperty Name="StudentDetail" Relationship="Self.FK_StudentDetails_StudentID" FromRole="Availability" ToRole="StudentDetails" />
+        </EntityType>
+        <EntityType Name="Community">
+          <Key>
+            <PropertyRef Name="Community_ID" />
+          </Key>
+          <Property Name="Community_ID" Type="Int32" Nullable="false" />
+          <Property Name="Community_Name" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Community_Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="BullRunner" Type="Boolean" />
+          <Property Name="Facility" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Availabilities" Relationship="Self.FK_Community_CommunityID" FromRole="Community" ToRole="Availability" />
+          <NavigationProperty Name="Requests" Relationship="Self.FK_Community_CommunityID2" FromRole="Community" ToRole="Requests" />
+        </EntityType>
+        <EntityType Name="Request">
+          <Key>
+            <PropertyRef Name="RequestorID" />
+            <PropertyRef Name="RequesteeID" />
+            <PropertyRef Name="CommunityID" />
+            <PropertyRef Name="AptNo" />
+          </Key>
+          <Property Name="RequestorID" Type="String" MaxLength="9" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="RequesteeID" Type="String" MaxLength="9" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CommunityID" Type="Int32" Nullable="false" />
+          <Property Name="AptNo" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Community" Relationship="Self.FK_Community_CommunityID2" FromRole="Requests" ToRole="Community" />
+          <NavigationProperty Name="StudentDetail" Relationship="Self.FK_StudentDetails_StudentID2" FromRole="Requests" ToRole="StudentDetails" />
+          <NavigationProperty Name="StudentDetail1" Relationship="Self.FK_StudentDetails_StudentID3" FromRole="Requests" ToRole="StudentDetails" />
+        </EntityType>
+        <EntityType Name="StudentDetail">
+          <Key>
+            <PropertyRef Name="Student_ID" />
+          </Key>
+          <Property Name="Student_ID" Type="String" MaxLength="9" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Student_FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Student_LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Student_Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Student_Phone" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Term_Code" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Availabilities" Relationship="Self.FK_StudentDetails_StudentID" FromRole="StudentDetails" ToRole="Availability" />
+          <NavigationProperty Name="Requests" Relationship="Self.FK_StudentDetails_StudentID2" FromRole="StudentDetails" ToRole="Requests" />
+          <NavigationProperty Name="Requests1" Relationship="Self.FK_StudentDetails_StudentID3" FromRole="StudentDetails" ToRole="Requests" />
+          <NavigationProperty Name="TermTable" Relationship="Self.FK__StudentDe__Term___4AB81AF0" FromRole="StudentDetails" ToRole="TermTable" />
+        </EntityType>
+        <EntityType Name="TermTable">
+          <Key>
+            <PropertyRef Name="Term_Code" />
+          </Key>
+          <Property Name="Term_Code" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="StudentDetails" Relationship="Self.FK__StudentDe__Term___4AB81AF0" FromRole="TermTable" ToRole="StudentDetails" />
+        </EntityType>
+        <Association Name="FK_Community_CommunityID">
+          <End Role="Community" Type="Self.Community" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Availability" Type="Self.Availability" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Community">
+              <PropertyRef Name="Community_ID" />
+            </Principal>
+            <Dependent Role="Availability">
+              <PropertyRef Name="Community_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudentDetails_StudentID">
+          <End Role="StudentDetails" Type="Self.StudentDetail" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Availability" Type="Self.Availability" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StudentDetails">
+              <PropertyRef Name="Student_ID" />
+            </Principal>
+            <Dependent Role="Availability">
+              <PropertyRef Name="Student_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Community_CommunityID2">
+          <End Role="Community" Type="Self.Community" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Requests" Type="Self.Request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Community">
+              <PropertyRef Name="Community_ID" />
+            </Principal>
+            <Dependent Role="Requests">
+              <PropertyRef Name="CommunityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudentDetails_StudentID2">
+          <End Role="StudentDetails" Type="Self.StudentDetail" Multiplicity="1" />
+          <End Role="Requests" Type="Self.Request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StudentDetails">
+              <PropertyRef Name="Student_ID" />
+            </Principal>
+            <Dependent Role="Requests">
+              <PropertyRef Name="RequestorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudentDetails_StudentID3">
+          <End Role="StudentDetails" Type="Self.StudentDetail" Multiplicity="1" />
+          <End Role="Requests" Type="Self.Request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StudentDetails">
+              <PropertyRef Name="Student_ID" />
+            </Principal>
+            <Dependent Role="Requests">
+              <PropertyRef Name="RequesteeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__StudentDe__Term___4AB81AF0">
+          <End Role="TermTable" Type="Self.TermTable" Multiplicity="1" />
+          <End Role="StudentDetails" Type="Self.StudentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TermTable">
+              <PropertyRef Name="Term_Code" />
+            </Principal>
+            <Dependent Role="StudentDetails">
+              <PropertyRef Name="Term_Code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="USFAccomEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Availabilities" EntityType="Self.Availability" />
+          <EntitySet Name="Communities" EntityType="Self.Community" />
+          <EntitySet Name="Requests" EntityType="Self.Request" />
+          <EntitySet Name="StudentDetails" EntityType="Self.StudentDetail" />
+          <EntitySet Name="TermTables" EntityType="Self.TermTable" />
+          <AssociationSet Name="FK_Community_CommunityID" Association="Self.FK_Community_CommunityID">
+            <End Role="Community" EntitySet="Communities" />
+            <End Role="Availability" EntitySet="Availabilities" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentDetails_StudentID" Association="Self.FK_StudentDetails_StudentID">
+            <End Role="StudentDetails" EntitySet="StudentDetails" />
+            <End Role="Availability" EntitySet="Availabilities" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Community_CommunityID2" Association="Self.FK_Community_CommunityID2">
+            <End Role="Community" EntitySet="Communities" />
+            <End Role="Requests" EntitySet="Requests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentDetails_StudentID2" Association="Self.FK_StudentDetails_StudentID2">
+            <End Role="StudentDetails" EntitySet="StudentDetails" />
+            <End Role="Requests" EntitySet="Requests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentDetails_StudentID3" Association="Self.FK_StudentDetails_StudentID3">
+            <End Role="StudentDetails" EntitySet="StudentDetails" />
+            <End Role="Requests" EntitySet="Requests" />
+          </AssociationSet>
+          <AssociationSet Name="FK__StudentDe__Term___4AB81AF0" Association="Self.FK__StudentDe__Term___4AB81AF0">
+            <End Role="TermTable" EntitySet="TermTables" />
+            <End Role="StudentDetails" EntitySet="StudentDetails" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="USFAccomModelStoreContainer" CdmEntityContainer="USFAccomEntities">
+          <EntitySetMapping Name="Availabilities">
+            <EntityTypeMapping TypeName="USFAccomModel.Availability">
+              <MappingFragment StoreEntitySet="Availability">
+                <ScalarProperty Name="Student_ID" ColumnName="Student_ID" />
+                <ScalarProperty Name="Community_ID" ColumnName="Community_ID" />
+                <ScalarProperty Name="AptNo" ColumnName="AptNo" />
+                <ScalarProperty Name="AvailableSlots" ColumnName="AvailableSlots" />
+                <ScalarProperty Name="Preference" ColumnName="Preference" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Communities">
+            <EntityTypeMapping TypeName="USFAccomModel.Community">
+              <MappingFragment StoreEntitySet="Community">
+                <ScalarProperty Name="Community_ID" ColumnName="Community_ID" />
+                <ScalarProperty Name="Community_Name" ColumnName="Community_Name" />
+                <ScalarProperty Name="Community_Address" ColumnName="Community_Address" />
+                <ScalarProperty Name="BullRunner" ColumnName="BullRunner" />
+                <ScalarProperty Name="Facility" ColumnName="Facility" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Requests">
+            <EntityTypeMapping TypeName="USFAccomModel.Request">
+              <MappingFragment StoreEntitySet="Requests">
+                <ScalarProperty Name="RequestorID" ColumnName="RequestorID" />
+                <ScalarProperty Name="RequesteeID" ColumnName="RequesteeID" />
+                <ScalarProperty Name="CommunityID" ColumnName="CommunityID" />
+                <ScalarProperty Name="AptNo" ColumnName="AptNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StudentDetails">
+            <EntityTypeMapping TypeName="USFAccomModel.StudentDetail">
+              <MappingFragment StoreEntitySet="StudentDetails">
+                <ScalarProperty Name="Student_ID" ColumnName="Student_ID" />
+                <ScalarProperty Name="Student_FirstName" ColumnName="Student_FirstName" />
+                <ScalarProperty Name="Student_LastName" ColumnName="Student_LastName" />
+                <ScalarProperty Name="Student_Email" ColumnName="Student_Email" />
+                <ScalarProperty Name="Student_Phone" ColumnName="Student_Phone" />
+                <ScalarProperty Name="Term_Code" ColumnName="Term_Code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TermTables">
+            <EntityTypeMapping TypeName="USFAccomModel.TermTable">
+              <MappingFragment StoreEntitySet="TermTable">
+                <ScalarProperty Name="Term_Code" ColumnName="Term_Code" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

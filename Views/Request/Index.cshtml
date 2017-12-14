@@ -1,0 +1,96 @@
+﻿@model USF_Accom.Models.RequestsViewModel
+@{
+    ViewBag.Title = "Requests";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.13/datatables.min.css" />
+
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.13/datatables.min.js"></script>
+
+<div class="row">
+    <div class="col-lg-10 col-md-10 col-sm-10">
+        <h2>Requests Posted</h2>
+
+        <table id="detTable" class="compact striped">
+            <thead>
+                <tr>
+                    <th>StudentId</th>
+                    <th>CommunityName</th>
+                    <th>AptNo</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var posted in Model.RequestsPosted)
+                {
+                    <tr>
+                        <td>@posted.RequesteeID</td>
+                        <td>@posted.CommunityName</td>
+                        <td>@posted.AptNo</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-10 col-md-10 col-sm-10">
+        <h2>Requests Recieved</h2>
+
+        <table id="reqTable" class="compact striped">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Phone Number</th>
+                    <th>Community Name</th>
+                    <th>AptNo</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var received in Model.RequestsReceived)
+                {
+                    <tr>
+                        <td>@received.Student_Name</td>
+                        <td>@received.Student_Phone</td>
+                        <td>@received.CommunityName</td>
+                        <td>@received.AptNo</td>
+                        <td>
+                            <a class="acceptSlot" data-reqid="@received.RequestorID" data-commid="@received.CommunityID" data-aptno="@received.AptNo">Accept</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        $('#detTable').DataTable();
+        //$('#reqTable').DataTable();
+        var table = $('#detTable').DataTable();
+       
+
+        $('.acceptSlot').click(function () {
+            $(this).closest('tr').remove();
+            var requestorId = $(this).data('reqid');
+            var communityId = $(this).data('commid');
+            var aptNo = $(this).data('aptno');
+            //string requestorId, int communityId, string aptNo
+
+            $.ajax({
+                url: "/Request/Accept",
+                type: "GET",
+                data: { 'requestorId': requestorId, 'communityId': communityId, 'aptNo': aptNo },
+                success: function (data) {
+                   
+                },
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
+        });
+    });
+</script>

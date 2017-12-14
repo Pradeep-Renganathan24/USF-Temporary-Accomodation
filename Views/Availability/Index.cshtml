@@ -1,0 +1,47 @@
+﻿@model IEnumerable<USF_Accom.Models.AvailabilityViewModel>
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.13/datatables.min.css" />
+
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.13/datatables.min.js"></script>
+
+<h2>Details</h2>
+
+<table id="detTable" class="compact striped">
+    <thead>
+        <tr>
+            <th>StudentId</th>
+            <th>CommunityName</th>
+            <th>AptNo</th>
+            <th>Slots</th>
+            <th>Preference</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.StudentId</td>
+                <td>@item.CommunityName</td>
+                <td>@item.AptNo</td>
+                <td>@item.Slots</td>
+                <td>@item.Preference</td>
+                <td>
+                    <a class="requestSlot" href="/Request/Create/@item.StudentId/@item.CommunityID/@item.AptNo">Request</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+
+<script>
+    $(document).ready(function () {
+        $('#detTable').DataTable();      
+    });
+</script>

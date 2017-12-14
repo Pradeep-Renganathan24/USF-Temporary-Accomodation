@@ -1,0 +1,181 @@
+﻿@model USF_Accom.Models.Availability
+
+@{
+    ViewBag.Title = "Availability";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.13/datatables.min.css" />
+<h2>Availability</h2>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "signupform" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-md-7 col-lg-7">
+            <div class="form-horizontal">
+                <h4>Availability</h4>
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="Student_ID">Student_ID</label>
+                    <div class="col-md-10">
+                        <input class="form-control text-box single-line" disabled="disabled" id="Student_ID" name="Student_ID" type="text" value="@ViewBag.StudentID" />
+                        <span class="field-validation-valid text-danger" data-valmsg-for="Student_ID" data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="Community_ID">Community_ID</label>
+                    <div class="col-md-10">
+                        <select class="form-control" data-val="true" data-val-number="The field Community_ID must be a number." data-val-required="The Community_ID field is required." id="Community_ID" name="Community_ID">
+                            @if (ViewBag.Communities != null)
+                            {
+                                foreach (var item in ViewBag.Communities)
+                                {
+                                    <option value=@item.Value>@item.Text</option>
+                                }
+                            }
+                        </select>
+                        <span class="field-validation-valid text-danger" data-valmsg-for="Community_ID" data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="AptNo">AptNo</label>
+                    <div class="col-md-10">
+                        <input class="form-control text-box single-line" id="AptNo" name="AptNo" type="text" value="" />
+                        <span class="field-validation-valid text-danger" data-valmsg-for="AptNo" data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="AvailableSlots">AvailableSlots</label>
+                    <div class="col-md-10">
+                        <input class="form-control text-box single-line" data-val="true" data-val-number="The field AvailableSlots must be a number." data-val-required="The AvailableSlots field is required." id="AvailableSlots" name="AvailableSlots" type="number" value="" />
+                        <span class="field-validation-valid text-danger" data-valmsg-for="AvailableSlots" data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="Preference">Preference</label>
+                    <div class="col-md-10">
+                        <input class="form-control text-box single-line" id="Preference" name="Preference" type="text" value="" />
+                        <span class="field-validation-valid text-danger" data-valmsg-for="Preference" data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="Status">Status</label>
+                    <div class="col-md-10">
+                        <div class="checkbox">
+                            <input class="check-box" data-val="true" data-val-required="The Status field is required." id="Status" name="Status" type="checkbox" checked="checked" disabled="disabled" /><input name="Status" type="hidden" value="true" />
+                            <span class="field-validation-valid text-danger" data-valmsg-for="Status" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="button" id="submitBtn" value="Create" class="btn btn-default" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-5 col-lg-5">
+            <table id="detTable" class="compact striped">
+                <thead>
+                    <tr>
+                        <th>StudentId</th>
+                        <th>AptNo</th>
+                        <th>CommunityName</th>                        
+                        <th>Preference</th>
+                        <th>Slots</th>
+                        
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+    </div>
+
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.13/datatables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var table = $('#detTable').DataTable();
+        $.ajax({
+            url: "/Availability/GetSlots",
+            type: "GET",
+            success: function (data) {
+                table.destroy();
+                $('#detTable tbody tr').remove();
+                $.each(data, function (index, item) {
+                    $('#detTable tbody').append('<tr>' +
+                                                '<td>' + item.StudentId + '</td>' +
+                                                '<td>' + item.AptNo + '</td>' +
+                                                '<td>' + item.CommunityName + '</td>' +
+                                                '<td>' + item.Preference + '</td>' +
+                                                '<td>' + item.Slots + '</td>' +
+                                                '</tr>');
+
+                    table = $('#detTable').DataTable();
+                });
+            },
+            error: function (xhr) {
+                console.log(xhr.responseText);
+            }
+        });
+
+        $('#submitBtn').click(function () {
+            var form = document.forms["signupform"];
+            $(form).validate();
+            if ($(form).valid()) {
+                var modelData = {
+                    Student_ID: $('#Student_ID').val(),
+                    Community_ID: $('#Community_ID').val(),
+                    AptNo: $('#AptNo').val(),
+                    AvailableSlots: $('#AvailableSlots').val(),
+                    Preference: $('#Preference').val(),
+                    Status: true
+                };
+
+                $.ajax({
+                    url: "/Availability/Create",
+                    type: "POST",
+                    data: { collection: modelData },
+                    success: function (data) {
+                        $('#signupform')[0].reset();
+                        table.destroy();
+                        $('#detTable tbody tr').remove();
+                        $.each(data, function (index, item) {
+                            $('#detTable tbody').append('<tr>' +
+                                                        '<td>' + item.StudentId + '</td>' +
+                                                        '<td>' + item.AptNo + '</td>' +
+                                                        '<td>' + item.CommunityName + '</td>' +
+                                                        '<td>' + item.Preference + '</td>' +
+                                                        '<td>' + item.Slots + '</td>' +
+                                                        '</tr>');
+
+                            table = $('#detTable').DataTable();
+                        });
+                    },
+                    error: function (xhr) {
+                        console.log(xhr.responseText);
+                    }
+                });
+                return;
+            }
+        });
+
+    });
+</script>
